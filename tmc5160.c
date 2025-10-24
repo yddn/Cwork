@@ -91,6 +91,11 @@ uint32_t TMC_ReadData(uint8_t address) {
 }
 
 /*
+stealthChop是一种步进电机非常安静工作的斩波模式 基于电压模式PWM脉宽调制技术
+
+
+斜坡发生器产生目标位置或目标速度的运动。目标位置和斜坡参数可以在运动期间的任何时间改变
+
 coolStep 是一种基于电机机械负载的步进电机智能调节能耗，使其“绿色
 SEMIN   阈值下限。4 位无符号整数。如果 SG 低于此阈值，
         coolStep 会增加两个线圈的电流。4 位 SEMIN 乘以  =0 禁用 coolStep
@@ -101,13 +106,14 @@ SEMAX   阈值上限，4 位无符号整数。如果 SG 被采样到等于
 coolStep 根据负载调节电机电流     五个参数控制 coolStep，返回一个状态值
 
 SEUP  SEDN SEIMIN  TCOOLTHRS THIGH  状态字: CSACTUAL
+ 减少最多 75%的能耗 提高机械精度
 
 dcStep 只需要几个设置。它直接将电机运动反馈给斜坡发生器，从而即使电机相对于目标速度过载，
 它也能无缝集成到运动斜坡中。dcStep 在斜坡发生器目标速度 VACTUAL 下以全步模式运行电机，如果电
 机过载，则以降低的速度运行电机。它需要设置最小操作速度 VDCMIN。VDCMIN 应为 dcStep 可对电机
 运行进行可靠检测的最低运行速度。除非制动到低于 VDCMIN 的速度，否则电机不会堵转。如果速度低
 于这个值，一旦负载被释放，电机将重新启动，除非堵转检测被启用(设置 sg_stop)。stallguard 2 实现堵
-转检测功能。
+转检测功能。 从不丢步 尽可能快 
 
 
 设置 GCONF 标志 stop_enable 使能此
