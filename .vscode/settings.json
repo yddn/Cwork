@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.frm": "vb",
+    "fstream": "cpp",
+    "vector": "cpp",
+    "set": "cpp",
+    "queue": "cpp",
+    "chrono": "cpp",
+    "RM.C": "cpp"
+  }
+}

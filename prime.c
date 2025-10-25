@@ -60,16 +60,32 @@ int is_prime(uint64_t n, int k) {
 
 // 测试示例
 int main() {
-    uint64_t test_nums[] = {2, 3, 17, 19, 20, 561, 1105, 1729, 2147483647, 9223372036854775783ULL};
+    //uint64_t test_nums[] = {2, 3, 17, 19, 20, 561, 1105, 1729, 2147483647, 9223372036854775783ULL};
     int k = 10;  // 测试轮数
 
-    for (int i = 0; i < sizeof(test_nums)/sizeof(test_nums[0]); i++) {
-        uint64_t n = test_nums[i];
+    // for (int i = 0; i < sizeof(test_nums)/sizeof(test_nums[0]); i++) {
+    //     uint64_t n = test_nums[i];
+    uint64_t n ;
+    scanf("%d",&n); //656565632653265651;
         if (is_prime(n, k))
             printf("%llu 是素数（概率判断）\n", n);
         else
             printf("%llu 不是素数\n", n);
-    }
+    // }
 
     return 0;
 }
+
+
+int is_prime(x,k)   {
+    //x <2 或偶数直接返回
+    //根据 k 创随机数进行打印并测试
+    //测试结果 返回
+}
+
+int main(){
+    //先读取键盘输入待测数x，定义测试轮数k
+    //调用判断函数(is_prime(x,k))根据返回值 写入文件
+    //
+}
+
