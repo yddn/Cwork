@@ -6,6 +6,9 @@
     "set": "cpp",
     "queue": "cpp",
     "chrono": "cpp",
-    "RM.C": "cpp"
+    "RM.C": "cpp",
+    "iostream": "cpp",
+    "map": "cpp",
+    "random": "cpp"
   }
 }
