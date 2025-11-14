@@ -2,8 +2,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
-
+#define bignum unsigned long long
+#define uint128_t unsigned long
+#define __uint128_t unsigned long
 // 快速幂取模：计算 (base^exp) % mod
+//mod 待测数 base为测试基数 exp =mod -1
 uint64_t mod_exp(uint64_t base, uint64_t exp, uint64_t mod) {
     uint64_t result = 1;
     base %= mod;
@@ -88,4 +91,27 @@ int main(){
     //调用判断函数(is_prime(x,k))根据返回值 写入文件
     //
 }
+//a为随机生成数，n为待测数，q为次方，k为平方次数
 
+char Miller_Rabin_judge(bignum a, bignum n, bignum q, int k)
+{
+    uint128_t aq = 1;
+    a %= n;     //是不是有需要这一步
+    while(q >= 1){
+        if(q & 1){
+            aq =(aq * a)% n;
+        }
+        a=(a* a)% n;
+        q >>= 1;
+    }
+    if(aq == 1){
+        return 0;
+    }
+    for(short i= 1;i< k; i++){
+        aq =(aq * aq)% n;
+        if(aq ==n-1|| aq == 1){
+            return 0;
+        }
+    }
+    return 1;
+}

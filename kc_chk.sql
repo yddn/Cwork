@@ -12,30 +12,18 @@ BEGIN
         IF OBJECT_ID('tempdb..#MIOList') IS NOT NULL DROP TABLE #MIOList;
 
         CREATE TABLE #MIOList (
-            SID SMALLINT,    
-            BillCode CHAR(10),   
-            StID SMALLINT,
-            Mnum CHAR(26),   
-            TQuan DECIMAL(18,6), 
-            CQuan DECIMAL(18,6),
-            sWHC CHAR(10),
-            dWHC CHAR(10),
-            OrdID INT,
-            MKgM DECIMAL(18,2),
-            Made CHAR(16),
-            MColor CHAR(16),
-            MPrj CHAR(16),
-            Kjyear INT,
-            Period SMALLINT,
-            MLen DECIMAL(18,2),
-            HH CHAR(30),
-            BillDate DATE,
-            BillNum CHAR(20),
-            InvSortCode CHAR(12),
-            MType SMALLINT,
-            IONum CHAR(20),
-            IOClassCode CHAR(10),
-            IPrice DECIMAL(18,6)
+            SID         SMALLINT,       BillCode    CHAR(10),   
+            StID        SMALLINT,       Mnum        CHAR(26),   
+            TQuan       DECIMAL(18,6),  CQuan       DECIMAL(18,6),
+            sWHC        CHAR(10),       dWHC        CHAR(10),
+            OrdID       INT,            MKgM        DECIMAL(18,2),
+            Made        CHAR(16),       MColor      CHAR(16),
+            MPrj        CHAR(16),       Kjyear      INT,
+            [Period]    SMALLINT,       MLen DECIMAL(18,2),
+            HH CHAR(30),                BillDate DATE,
+            BillNum CHAR(20),           InvSortCode CHAR(12),
+            MType SMALLINT,             IONum CHAR(20),
+            IOClassCode CHAR(10),       IPrice DECIMAL(18,6)
         );
 
         INSERT INTO #MIOList
@@ -64,8 +52,7 @@ BEGIN
                    SUM(TQuan) AS SumTQuan,
                    SUM(CQuan) AS SumCQuan,
                    SUM(MKgM) AS SumMKgM
-            FROM Gy_MIOS A
-            INNER JOIN Gy_MIOM B ON A.MID = B.MID
+            FROM Gy_MIOS A INNER JOIN Gy_MIOM B ON A.MID = B.MID
             WHERE A.OrdID IN (SELECT OrdID FROM #MIOList)
               AND A.StID IN (SELECT StID FROM #MIOList)
               AND B.BillCode IN (SELECT BillCode FROM #MIOList)
@@ -93,7 +80,7 @@ BEGIN
                     @MType SMALLINT, @ION CHAR(20), @IOC CHAR(10), @iPric DECIMAL(18,6);
 
             SELECT @SID=SID, @BCode=BillCode, @StID=StID, @Mnum=Mnum, @TQuan=TQuan, @CQuan=CQuan, @sWHC=sWHC, @dWHC=dWHC,
-                   @OrdID=OrdID, @MKgM=MKgM, @Made=Made, @MCol=MColor, @MPrj=MPrj, @Kjyear=Kjyear, @MM=Period, @MLen=MLen,
+                   @OrdID=OrdID, @MKgM=MKgM, @Made=Made, @MCol=MColor, @MPrj=MPrj, @Kjyear=Kjyear, @MM=[Period], @MLen=MLen,
                    @HH=HH, @BDate=BillDate, @BNum=BillNum, @Inv=InvSortCode, @MType=MType, @ION=IONum, @IOC=IOClassCode, @iPric=IPrice
             FROM (
                 SELECT ROW_NUMBER() OVER (ORDER BY SID) AS rn, * FROM #MIOList
@@ -103,13 +90,13 @@ BEGIN
 
             -- 示例：MERGE KF_MMKJQuan 更新或插入
             MERGE KF_MMKJQuan AS target
-            USING (SELECT @Mnum AS Mnum, @Made AS Made, @MCol AS MColor, @MPrj AS MPrj, @MLen AS MLen, @Kjyear AS Kjyear, @MM AS Period, @dWHC AS WhCode) AS source
+            USING (SELECT @Mnum AS Mnum, @Made AS Made, @MCol AS MColor, @MPrj AS MPrj, @MLen AS MLen, @Kjyear AS Kjyear, @MM AS [Period], @dWHC AS WhCode) AS source
             ON target.Mnum = source.Mnum AND target.Made = source.Made AND target.MColor = source.MColor AND target.MPrj = source.MPrj
                AND target.MLen = source.MLen AND target.Kjyear = source.Kjyear AND target.Period = source.Period AND target.WhCode = source.WhCode
             WHEN MATCHED THEN
                 UPDATE SET NIQuanT = NIQuanT + @TQuan, NIQuanC = NIQuanC + @CQuan, MkgM = MkgM + @MKgM
             WHEN NOT MATCHED THEN
-                INSERT (Mnum, WhCode, Made, MColor, MPrj, MLen, MkgM, Kjyear, Period, NIQuanT, NIQuanC, IPrice)
+                INSERT (Mnum, WhCode, Made, MColor, MPrj, MLen, MkgM, Kjyear, [Period], NIQuanT, NIQuanC, IPrice)
                 VALUES (@Mnum, @dWHC, @Made, @MCol, @MPrj, @MLen, @MKgM, @Kjyear, @MM, @TQuan, @CQuan, @iPric);
 
             -- 其他业务逻辑依此类推，建议拆分成独立存储过程或函数调用
